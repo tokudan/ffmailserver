@@ -5,7 +5,7 @@ let
     config = (pkgs.writeText "postfixadmin-config.local.php" ''
       <?php
       $CONF['configured'] = true;
-      $CONF['setup_password'] = '2c6490f9fc2d44b8bc62f756545cc93b:39d57e9b418c9e1e5019a90752398fece393b4be';
+      $CONF['setup_password'] = 'b7cfa08c8546a0019a6251252144ca61:c90d645bc2de7302feb9702bb4da32d22412bae9';
       $CONF['database_type'] = 'sqlite';
       $CONF['database_name'] = '${dataDir}/postfixadmin.db';
       $CONF['password_expiration'] = 'NO';
@@ -26,6 +26,8 @@ let
         'postmaster' => 'kontakt@hamburg.freifunk.net',
         'webmaster' => 'kontakt@hamburg.freifunk.net'
       );
+      $CONF['footer_text'] = "";
+      $CONF['footer_link'] = "";
       ?>
     '');
     cacheDir = "${cacheDir}";
@@ -99,7 +101,7 @@ in
         fastcgi_param  SERVER_ADDR        $server_addr;
         fastcgi_param  SERVER_PORT        $server_port;
         fastcgi_param  SERVER_NAME        $server_name;
-        fastcgi_param   HTTP_PROXY              "";
+        fastcgi_param  HTTP_PROXY         "";
       }
     '';
   };
