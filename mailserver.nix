@@ -4,7 +4,7 @@
   # Import some configuration as they are too long to be easily readable here
   imports = [ 
     ./dovecot.nix
-    # ./postfix.nix
+    ./postfix.nix
     ./postfixadmin.nix
   ];
   users.groups."${config.variables.vmailGroup}" = { gid = config.variables.vmailGID; };
