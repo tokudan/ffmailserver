@@ -11,6 +11,11 @@
     pfadminDataDir = "/var/lib/postfixadmin";
     pfaUser = "pfadmin";
     pfaGroup = "pfadmin";
+    vmailUser = "vmail";
+    vmailUID = 10000;
+    vmailGroup = "vmail";
+    vmailGID = 10000;
+    vmailBaseDir = "/var/vmail";
     useSSL = false;
     phpfpmHostPort = "127.0.0.1:9000"; 
     dovecotUser = "dovecot2";
