@@ -7,6 +7,7 @@
 {
   imports =
     [ # Include the results of the hardware scan.
+      ./variables.nix
       ./users.nix
       ./mailserver.nix
     ];
@@ -26,7 +27,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    lsof vim wget
+    sqlite lsof vim wget
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

@@ -1,49 +1,20 @@
 { config, lib, pkgs, ... }:
 
 let
-  postfixadminpkg = (pkgs.callPackage ./pkg-postfixadmin.nix {
-    config = (pkgs.writeText "postfixadmin-config.local.php" ''
-      <?php
-      $CONF['configured'] = true;
-      $CONF['setup_password'] = 'b7cfa08c8546a0019a6251252144ca61:c90d645bc2de7302feb9702bb4da32d22412bae9';
-      $CONF['database_type'] = 'sqlite';
-      $CONF['database_name'] = '${dataDir}/postfixadmin.db';
-      $CONF['password_expiration'] = 'NO';
-      $CONF['encrypt'] = 'dovecot:BLF-CRYPT';
-      $CONF['dovecotpw'] = "${pkgs.dovecot}/bin/doveadm pw";
-      $CONF['generate_password'] = 'YES';
-      $CONF['show_password'] = 'NO';
-      $CONF['quota'] = 'NO';
-      $CONF['fetchmail'] = 'NO';
-      $CONF['recipient_delimiter'] = "+";
-      $CONF['forgotten_user_password_reset'] = false;
-      $CONF['forgotten_admin_password_reset'] = false;
-      $CONF['aliases'] = '0';
-      $CONF['mailboxes'] = '0';
-      $CONF['default_aliases'] = array (
-        'abuse' => 'abuse@hamburg.freifunk.net',
-        'hostmaster' => 'kontakt@hamburg.freifunk.net',
-        'postmaster' => 'kontakt@hamburg.freifunk.net',
-        'webmaster' => 'kontakt@hamburg.freifunk.net'
-      );
-      $CONF['footer_text'] = "";
-      $CONF['footer_link'] = "";
-      ?>
-    '');
-    cacheDir = "${cacheDir}";
-  } );
   phppoolName = "postfixadmin_pool";
-  cacheDir = "/var/cache/postfixadmin";
-  dataDir = "/var/lib/postfixadmin";
-  pfauser = "pfa";
-  pfagroup = "pfa";
+  pfaGroup = config.variables.pfaGroup;
+  pfaUser = config.variables.pfaUser;
+  postfixadminpkg = config.variables.postfixadminpkg;
+  pfadminDataDir = config.variables.pfadminDataDir;
+  cacheDir = config.variables.postfixadminpkgCacheDir;
+  phpfpmHostPort = config.variables.phpfpmHostPort;
 in
 {
   # Setup the user and group
-  users.groups."${pfagroup}" = { };
-  users.users."${pfauser}" = {
+  users.groups."${pfaGroup}" = { };
+  users.users."${pfaUser}" = {
     isSystemUser = true;
-    group = "${pfagroup}";
+    group = "${pfaGroup}";
     description = "PHP User for postfixadmin";
   };
 
@@ -51,8 +22,8 @@ in
   networking.firewall.allowedTCPPorts = [ 80 ];
   services.nginx.enable = true;
   services.nginx.virtualHosts."mailtest" = {
-    forceSSL = false;
-    enableACME = false;
+    forceSSL = config.variables.useSSL;
+    enableACME = config.variables.useSSL;
     default = true;
     root = "${postfixadminpkg}/public";
     extraConfig = ''
@@ -64,13 +35,6 @@ in
 
       index index.php;
 
-      # block these file types
-      #location ~* \.(tpl|md|tgz|log|out|tar|gz|db)$ {
-        #deny all;
-      #}
-
-      # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-      # or a unix socket
       location ~* \.php$ {
         # Zero-day exploit defense.
         # http://forum.nginx.org/read.php?2,88845,page=3
@@ -82,7 +46,7 @@ in
         # NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
         # With php5-cgi alone:
-        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_pass ${phpfpmHostPort};
         fastcgi_index index.php;
         fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;
         fastcgi_param  SERVER_SOFTWARE    nginx;
@@ -110,19 +74,19 @@ in
     wantedBy = [ "multi-user.target" ];
     script = ''
       # Setup the data directory with the database and the cache directory
-      mkdir -p ${dataDir}
-      chmod -c 751 ${dataDir}
-      chown -c ${pfauser}:${pfagroup} ${dataDir}
+      mkdir -p ${pfadminDataDir}
+      chmod -c 751 ${pfadminDataDir}
+      chown -c ${pfaUser}:${pfaGroup} ${pfadminDataDir}
 
       mkdir -p ${cacheDir}/templates_c
-      chown -Rc ${pfauser}:${pfagroup} ${cacheDir}/templates_c
+      chown -Rc ${pfaUser}:${pfaGroup} ${cacheDir}/templates_c
       chmod -Rc 751 ${cacheDir}/templates_c
     '';
   };
   services.phpfpm.pools."${phppoolName}" = {
-    listen = "127.0.0.1:9000"; 
+    listen = phpfpmHostPort;
     extraConfig = ''
-      user = ${pfauser}
+      user = ${pfaUser}
       pm = dynamic
       pm.max_children = 75
       pm.min_spare_servers = 5
