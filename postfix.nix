@@ -36,10 +36,17 @@ in
     enableSmtp = true;
     enableSubmission = true;
     config = {
+      mynetworks_style = "host";
+      relay_domains = "";
+      smtpd_sasl_type = "dovecot";
       virtual_mailbox_domains = "proxy:sqlite:${pfvirtual_mailbox_domains}";
       virtual_alias_maps = "proxy:sqlite:${pfvirtual_alias_maps}, proxy:sqlite:${pfvirtual_alias_domain_maps}, proxy:sqlite:${pfvirtual_alias_domain_catchall_maps}";
       virtual_mailbox_maps = "proxy:sqlite:${pfvirtual_mailbox_maps}, proxy:sqlite:${pfvirtual_alias_domain_mailbox_maps}";
       virtual_transport = "lmtp:unix:/run/dovecot2/dovecot-lmtp";
     };
+    extraAliases = ''
+      root: kontakt@hamburg.freifunk.net
+      postmaster: kontakt@hamburg.freifunk.net
+      '';
   };
 }

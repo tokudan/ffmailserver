@@ -17,6 +17,7 @@ let
     #ssl_key = </etc/dovecot/private/dovecot.pem
 
     disable_plaintext_auth = no
+    auth_mechanisms = plain login
 
     userdb {
         driver = sql
@@ -30,6 +31,14 @@ let
     mail_location = maildir:${config.variables.vmailBaseDir}/%Lu/Maildir
     mail_uid = ${toString config.variables.vmailUID}
     mail_gid = ${toString config.variables.vmailGID}
+
+    service auth {
+      unix_listener /run/dovecot2/dovecot-auth {
+        user = ${config.services.postfix.user}
+        group = ${config.services.postfix.group}
+        mode = 0600
+      }
+    }
 
     service lmtp {
       unix_listener /run/dovecot2/dovecot-lmtp {
