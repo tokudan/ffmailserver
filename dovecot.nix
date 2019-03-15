@@ -31,6 +31,14 @@ let
     mail_uid = ${toString config.variables.vmailUID}
     mail_gid = ${toString config.variables.vmailGID}
 
+    service lmtp {
+      unix_listener /run/dovecot2/dovecot-lmtp {
+        user = ${config.services.postfix.user}
+        group = ${config.services.postfix.group}
+        mode = 0600
+      }
+    }
+
     namespace inbox {
       inbox = yes
       location =
