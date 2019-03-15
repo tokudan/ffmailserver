@@ -27,6 +27,8 @@ let
   '';
 in
 {
+  # Configure Postfix to support SQLite
+  nixpkgs.config.packageOverrides = pkgs: { postfix = pkgs.postfix.override { withSQLite = true; }; };
   # Setup Postfix
   # networking.firewall.allowedTCPPorts = [ 80 ];
   services.postfix = {
@@ -37,6 +39,7 @@ in
       virtual_mailbox_domains = "proxy:sqlite:${pfvirtual_mailbox_domains}";
       virtual_alias_maps = "proxy:sqlite:${pfvirtual_alias_maps}, proxy:sqlite:${pfvirtual_alias_domain_maps}, proxy:sqlite:${pfvirtual_alias_domain_catchall_maps}";
       virtual_mailbox_maps = "proxy:sqlite:${pfvirtual_mailbox_maps}, proxy:sqlite:${pfvirtual_alias_domain_mailbox_maps}";
+      virtual_transport = "lmtp:unix:/run/dovecot2/dovecot-lmtp";
     };
   };
 }
