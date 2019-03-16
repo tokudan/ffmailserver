@@ -17,7 +17,10 @@
     vmailGID = 10000;
     vmailBaseDir = "/var/vmail";
     useSSL = false;
-    phpfpmHostPort = "127.0.0.1:9000"; 
+    roundcubePhpfpmHostPort = "127.0.0.1:9001";
+    roundcubeUser = "roundcube";
+    roundcubeDataDir = "/var/lib/roundcube";
+    pfaPhpfpmHostPort = "127.0.0.1:9000";
     dovecotUser = "dovecot2";
     dovecotGroup = "dovecot2";
     postfixadminpkgCacheDir = "/var/cache/postfixadmin";
@@ -41,10 +44,10 @@
         $CONF['aliases'] = '0';
         $CONF['mailboxes'] = '0';
         $CONF['default_aliases'] = array (
-          'abuse' => 'abuse@hamburg.freifunk.net',
-          'hostmaster' => 'kontakt@hamburg.freifunk.net',
-          'postmaster' => 'kontakt@hamburg.freifunk.net',
-          'webmaster' => 'kontakt@hamburg.freifunk.net'
+          'abuse' => 'postmaster@${config.variables.myDomain}',
+          'hostmaster' => 'postmaster@${config.variables.myDomain}',
+          'postmaster' => 'postmaster@${config.variables.myDomain}',
+          'webmaster' => 'postmaster@${config.variables.myDomain}'
         );
         $CONF['footer_text'] = "";
         $CONF['footer_link'] = "";

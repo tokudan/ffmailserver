@@ -12,7 +12,7 @@
       ./mailserver.nix
     ];
 
-  networking.hostName = "mailtest"; # Define your hostname.
+  networking.hostName = "${config.variables.myFQDN}"; # Define your hostname.
 
   # Select internationalisation properties.
   # i18n = {

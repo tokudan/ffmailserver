@@ -6,6 +6,7 @@
     ./dovecot.nix
     ./postfix.nix
     ./postfixadmin.nix
+    ./roundcube.nix
   ];
   users.groups."${config.variables.vmailGroup}" = { gid = config.variables.vmailGID; };
   users.users."${config.variables.vmailUser}" = {

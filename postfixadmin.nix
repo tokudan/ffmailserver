@@ -7,7 +7,7 @@ let
   postfixadminpkg = config.variables.postfixadminpkg;
   pfadminDataDir = config.variables.pfadminDataDir;
   cacheDir = config.variables.postfixadminpkgCacheDir;
-  phpfpmHostPort = config.variables.phpfpmHostPort;
+  phpfpmHostPort = config.variables.pfaPhpfpmHostPort;
 in
 {
   # Setup the user and group
@@ -19,9 +19,9 @@ in
   };
 
   # Setup nginx
-  networking.firewall.allowedTCPPorts = [ 80 ];
+  networking.firewall.allowedTCPPorts = [ 80 443 ];
   services.nginx.enable = true;
-  services.nginx.virtualHosts."mailtest" = {
+  services.nginx.virtualHosts."admin.${config.variables.myFQDN}" = {
     forceSSL = config.variables.useSSL;
     enableACME = config.variables.useSSL;
     default = true;

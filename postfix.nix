@@ -30,7 +30,7 @@ in
   # Configure Postfix to support SQLite
   nixpkgs.config.packageOverrides = pkgs: { postfix = pkgs.postfix.override { withSQLite = true; }; };
   # Setup Postfix
-  # networking.firewall.allowedTCPPorts = [ 80 ];
+  networking.firewall.allowedTCPPorts = [ 25 587 ];
   services.postfix = {
     enable = true;
     enableSmtp = true;
@@ -45,8 +45,7 @@ in
       virtual_transport = "lmtp:unix:/run/dovecot2/dovecot-lmtp";
     };
     extraAliases = ''
-      root: kontakt@hamburg.freifunk.net
-      postmaster: kontakt@hamburg.freifunk.net
+      root: ${config.variables.mailAdmin}
       '';
   };
 }
