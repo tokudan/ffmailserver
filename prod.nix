@@ -3,9 +3,9 @@
 {
   imports = [ ./configuration.nix ];
   config.variables.useSSL = true;
-  config.variables.myFQDN = "mail.warnochwas.de";
-  config.variables.myDomain = "warnochwas.de";
-  config.variables.mailAdmin = "test@warnochwas.de";
+  config.networking.hostName = "mail";
+  config.networking.domain = "warnochwas.de";
+  config.variables.mailAdmin = "postmaster@warnochwas.de";
 
   # Use the staging environment of Let's encrypt and accept their certificates as well...
   config.security.acme.production = false;

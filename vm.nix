@@ -3,5 +3,7 @@
 {
   imports = [ ./configuration.nix ];
   config.variables.useSSL = false;
-  config.variables.myFQDN = "mailtest";
+  config.networking.hostName = "mailtest";
+  config.networking.domain = "warnochwas.de";
+  config.variables.mailAdmin = "postmaster@warnochwas.de";
 }

@@ -12,8 +12,6 @@
       ./mailserver.nix
     ];
 
-  networking.hostName = "${config.variables.myFQDN}"; # Define your hostname.
-
   # Select internationalisation properties.
   # i18n = {
   #   consoleFont = "Lat2-Terminus16";

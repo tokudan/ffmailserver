@@ -12,6 +12,7 @@
     dovecotUser = "dovecot2";
     dovecotAuthSocket = "/run/dovecot2/dovecot-auth";
     dovecotLmtpSocket = "/run/dovecot2/dovecot-lmtp";
+    myFQDN = "${config.networking.hostName}.${config.networking.domain}";
     pfadminDataDir = "/var/lib/postfixadmin";
     pfaGroup = "pfadmin";
     pfaPhpfpmHostPort = "127.0.0.1:9000";
@@ -46,10 +47,10 @@
         $CONF['aliases'] = '0';
         $CONF['mailboxes'] = '0';
         $CONF['default_aliases'] = array (
-          'abuse' => 'postmaster@${config.variables.myDomain}',
-          'hostmaster' => 'postmaster@${config.variables.myDomain}',
-          'postmaster' => 'postmaster@${config.variables.myDomain}',
-          'webmaster' => 'postmaster@${config.variables.myDomain}'
+          'abuse' => '${config.variables.mailAdmin}',
+          'hostmaster' => '${config.variables.mailAdmin}',
+          'postmaster' => '${config.variables.mailAdmin}',
+          'webmaster' => '${config.variables.mailAdmin}'
         );
         $CONF['footer_text'] = "";
         $CONF['footer_link'] = "";
