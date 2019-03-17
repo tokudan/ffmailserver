@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   dovecotSQL = pkgs.writeText "dovecot-sql.conf" ''
@@ -12,9 +12,12 @@ let
     default_internal_group = dovecot2
     protocols = imap lmtp pop3
 
-    ssl = no
-    #ssl_cert = </etc/dovecot/private/dovecot.pem
-    #ssl_key = </etc/dovecot/private/dovecot.pem
+    ${lib.optionalString (config.variables.useSSL) ''
+        ssl = yes
+        ssl_cert = </var/lib/acme/dovecot2.${config.variables.myFQDN}/fullchain.pem
+        ssl_key = </var/lib/acme/dovecot2.${config.variables.myFQDN}/key.pem
+      ''
+    }
 
     disable_plaintext_auth = no
     auth_mechanisms = plain login
@@ -74,8 +77,20 @@ let
   '';
 in
 {
+  # Configure certificates...
+  security.acme.certs."dovecot2.${config.variables.myFQDN}" = {
+    domain = "${config.variables.myFQDN}";
+    user = config.services.nginx.user;
+    group = config.services.dovecot2.group;
+    allowKeysForGroup = true;
+    postRun = "systemctl restart dovecot2.service";
+    # cheat by getting the webroot from another certificate configured through nginx.
+    webroot = config.security.acme.certs."${config.variables.myFQDN}".webroot;
+  };
+  # Make sure at least the self-signed certs are available before trying to start postfix
+  systemd.services.dovecot2.after = [ "acme-selfsigned-certificates.target" ];
   # Setup dovecot
-  # networking.firewall.allowedTCPPorts = [ 80 ];
+  networking.firewall.allowedTCPPorts = [ 110 143 ];
   services.dovecot2 = {
     enable = true;
     configFile = "${dovecotConf}";

@@ -90,6 +90,7 @@ in
     script = ''
       mkdir -p ${config.variables.roundcubeDataDir}/temp ${config.variables.roundcubeDataDir}/logs
       chown -Rc ${config.variables.roundcubeUser} ${config.variables.roundcubeDataDir}
+      chmod -c 700 ${config.variables.roundcubeDataDir}
     '';
   };
   services.phpfpm.pools."${poolName}" = {
