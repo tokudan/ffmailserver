@@ -21,7 +21,7 @@ in
   # Setup nginx
   networking.firewall.allowedTCPPorts = [ 80 443 ];
   services.nginx.enable = true;
-  services.nginx.virtualHosts."admin.${config.variables.myFQDN}" = {
+  services.nginx.virtualHosts."${config.variables.pfaDomain}" = {
     forceSSL = config.variables.useSSL;
     enableACME = config.variables.useSSL;
     default = true;

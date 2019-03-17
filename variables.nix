@@ -17,6 +17,7 @@
     pfaGroup = "pfadmin";
     pfaPhpfpmHostPort = "127.0.0.1:9000";
     pfaUser = "pfadmin";
+    pfaDomain = "pfa.${config.variables.myFQDN}";
     roundcubeDataDir = "/var/lib/roundcube";
     roundcubePhpfpmHostPort = "127.0.0.1:9001";
     roundcubeUser = "roundcube";
