@@ -85,7 +85,6 @@ in
   };
   systemd.services.roundcube-install = {
     serviceConfig.Type = "oneshot";
-    requires = [ "srv-roundcube.mount" ];
     wantedBy = [ "multi-user.target" ];
     script = ''
       mkdir -p ${config.variables.roundcubeDataDir}/temp ${config.variables.roundcubeDataDir}/logs
