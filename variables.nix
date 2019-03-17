@@ -8,21 +8,23 @@
     };
   };
   config.variables = {
+    dovecotGroup = "dovecot2";
+    dovecotUser = "dovecot2";
+    dovecotAuthSocket = "/run/dovecot2/dovecot-auth";
+    dovecotLmtpSocket = "/run/dovecot2/dovecot-lmtp";
     pfadminDataDir = "/var/lib/postfixadmin";
-    pfaUser = "pfadmin";
     pfaGroup = "pfadmin";
-    vmailUser = "vmail";
-    vmailUID = 10000;
-    vmailGroup = "vmail";
-    vmailGID = 10000;
-    vmailBaseDir = "/var/vmail";
-    useSSL = false;
+    pfaPhpfpmHostPort = "127.0.0.1:9000";
+    pfaUser = "pfadmin";
+    roundcubeDataDir = "/var/lib/roundcube";
     roundcubePhpfpmHostPort = "127.0.0.1:9001";
     roundcubeUser = "roundcube";
-    roundcubeDataDir = "/var/lib/roundcube";
-    pfaPhpfpmHostPort = "127.0.0.1:9000";
-    dovecotUser = "dovecot2";
-    dovecotGroup = "dovecot2";
+    useSSL = false;
+    vmailBaseDir = "/var/vmail";
+    vmailGID = 10000;
+    vmailGroup = "vmail";
+    vmailUID = 10000;
+    vmailUser = "vmail";
     postfixadminpkgCacheDir = "/var/cache/postfixadmin";
     postfixadminpkg = (pkgs.callPackage ./pkg-postfixadmin.nix {
       config = (pkgs.writeText "postfixadmin-config.local.php" ''

@@ -2,3 +2,5 @@
 .*.swp
 .envrc
 nixpkgs/
+localstate.nixops*
+nixops.nix

@@ -33,7 +33,7 @@ let
     mail_gid = ${toString config.variables.vmailGID}
 
     service auth {
-      unix_listener /run/dovecot2/dovecot-auth {
+      unix_listener ${config.variables.dovecotAuthSocket} {
         user = ${config.services.postfix.user}
         group = ${config.services.postfix.group}
         mode = 0600
@@ -41,7 +41,7 @@ let
     }
 
     service lmtp {
-      unix_listener /run/dovecot2/dovecot-lmtp {
+      unix_listener ${config.variables.dovecotLmtpSocket} {
         user = ${config.services.postfix.user}
         group = ${config.services.postfix.group}
         mode = 0600
