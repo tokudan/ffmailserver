@@ -56,17 +56,18 @@ in
     config = {
       mynetworks_style = "host";
       relay_domains = "";
-      smtpd_sasl_type = "dovecot";
+      smtpd_milters = "unix:${config.variables.rspamdMilterSocket}";
       smtpd_sasl_path = config.variables.dovecotAuthSocket;
-      smtp_tls_loglevel = "1";
-      smtp_tls_security_level = "may";
+      smtpd_sasl_type = "dovecot";
       smtpd_tls_auth_only = "yes";
       smtpd_tls_chain_files = lib.mkIf config.variables.useSSL "/var/lib/acme/postfix.${config.variables.myFQDN}/full.pem";
-      smtpd_tls_received_header = "yes";
       smtpd_tls_loglevel = "1";
+      smtpd_tls_received_header = "yes";
       smtpd_tls_security_level = "may";
-      virtual_mailbox_domains = "proxy:sqlite:${pfvirtual_mailbox_domains}";
+      smtp_tls_loglevel = "1";
+      smtp_tls_security_level = "may";
       virtual_alias_maps = "proxy:sqlite:${pfvirtual_alias_maps}, proxy:sqlite:${pfvirtual_alias_domain_maps}, proxy:sqlite:${pfvirtual_alias_domain_catchall_maps}";
+      virtual_mailbox_domains = "proxy:sqlite:${pfvirtual_mailbox_domains}";
       virtual_mailbox_maps = "proxy:sqlite:${pfvirtual_mailbox_maps}, proxy:sqlite:${pfvirtual_alias_domain_mailbox_maps}";
       virtual_transport = "lmtp:unix:${config.variables.dovecotLmtpSocket}";
     };
