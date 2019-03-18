@@ -78,17 +78,19 @@ let
 in
 {
   # Configure certificates...
-  security.acme.certs."dovecot2.${config.variables.myFQDN}" = {
-    domain = "${config.variables.myFQDN}";
-    user = config.services.nginx.user;
-    group = config.services.dovecot2.group;
-    allowKeysForGroup = true;
-    postRun = "systemctl restart dovecot2.service";
-    # cheat by getting the webroot from another certificate configured through nginx.
-    webroot = config.security.acme.certs."${config.variables.myFQDN}".webroot;
+  security = lib.mkIf config.variables.useSSL {
+    acme.certs."dovecot2.${config.variables.myFQDN}" = {
+      domain = "${config.variables.myFQDN}";
+      user = config.services.nginx.user;
+      group = config.services.dovecot2.group;
+      allowKeysForGroup = true;
+      postRun = "systemctl restart dovecot2.service";
+      # cheat by getting the webroot from another certificate configured through nginx.
+      webroot = config.security.acme.certs."${config.variables.myFQDN}".webroot;
+    };
   };
   # Make sure at least the self-signed certs are available before trying to start postfix
-  systemd.services.dovecot2.after = [ "acme-selfsigned-certificates.target" ];
+  systemd.services.dovecot2.after = lib.mkIf config.variables.useSSL [ "acme-selfsigned-certificates.target" ];
   # Setup dovecot
   networking.firewall.allowedTCPPorts = [ 110 143 ];
   services.dovecot2 = {

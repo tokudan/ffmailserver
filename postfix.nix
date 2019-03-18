@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   pfvirtual_mailbox_domains = pkgs.writeText "virtual_mailbox_domains.cf" ''
@@ -29,18 +29,24 @@ in
 {
   # Configure Postfix to support SQLite
   nixpkgs.config.packageOverrides = pkgs: { postfix = pkgs.postfix.override { withSQLite = true; }; };
-  # Configure the certificates...
-  security.acme.certs."postfix.${config.variables.myFQDN}" = {
-    domain = "${config.variables.myFQDN}";
-    user = config.services.nginx.user;
-    group = config.services.postfix.group;
-    allowKeysForGroup = true;
-    postRun = "systemctl restart postfix.service";
-    # cheat by getting the webroot from another certificate configured through nginx.
-    webroot = config.security.acme.certs."${config.variables.myFQDN}".webroot;
+  # SSL/TLS specific configuration
+  security = lib.mkIf config.variables.useSSL {
+    # Configure the certificates...
+    acme.certs."postfix.${config.variables.myFQDN}" = {
+      domain = "${config.variables.myFQDN}";
+      group = config.services.postfix.group;
+      allowKeysForGroup = true;
+      postRun = "systemctl restart postfix.service";
+      # cheat by getting some settings from another certificate configured through nginx.
+      user = config.security.acme.certs."${config.variables.myFQDN}".user;
+      webroot = config.security.acme.certs."${config.variables.myFQDN}".webroot;
+    };
   };
-  # Make sure at least the self-signed certs are available before trying to start postfix
-  systemd.services.postfix.after = [ "acme-selfsigned-certificates.target" ];
+  systemd = lib.mkIf config.variables.useSSL {
+    # Make sure at least the self-signed certs are available before trying to start postfix
+    services.postfix.after = [ "acme-selfsigned-certificates.target" ];
+  };
+
   # Setup Postfix
   networking.firewall.allowedTCPPorts = [ 25 587 ];
   services.postfix = {
@@ -55,7 +61,7 @@ in
       smtp_tls_loglevel = "1";
       smtp_tls_security_level = "may";
       smtpd_tls_auth_only = "yes";
-      smtpd_tls_chain_files = "/var/lib/acme/postfix.${config.variables.myFQDN}/full.pem";
+      smtpd_tls_chain_files = lib.mkIf config.variables.useSSL "/var/lib/acme/postfix.${config.variables.myFQDN}/full.pem";
       smtpd_tls_received_header = "yes";
       smtpd_tls_loglevel = "1";
       smtpd_tls_security_level = "may";

@@ -27,8 +27,8 @@ let
 in
 {
   services.nginx.virtualHosts."${config.variables.myFQDN}" = {
-    forceSSL = true;
-    enableACME = true;
+    forceSSL = config.variables.useSSL;
+    enableACME = config.variables.useSSL;
     root = "${roundcube}/public_html";
     locations."~ ^/favicon.ico/.*$" = {
         extraConfig = "try_files $uri kins/larry/images/$uri;";
