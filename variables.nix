@@ -12,6 +12,7 @@
     dovecotUser = "dovecot2";
     dovecotAuthSocket = "/run/dovecot2/dovecot-auth";
     dovecotLmtpSocket = "/run/dovecot2/dovecot-lmtp";
+    rspamdMilterSocket = "/run/rspamd/milter";
     myFQDN = "${config.networking.hostName}.${config.networking.domain}";
     pfadminDataDir = "/var/lib/postfixadmin";
     pfaGroup = "pfadmin";

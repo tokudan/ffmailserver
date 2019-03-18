@@ -7,6 +7,7 @@
     ./postfix.nix
     ./postfixadmin.nix
     ./roundcube.nix
+    ./rspamd.nix
   ];
   users.groups."${config.variables.vmailGroup}" = { gid = config.variables.vmailGID; };
   users.users."${config.variables.vmailUser}" = {
