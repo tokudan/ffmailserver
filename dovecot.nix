@@ -92,7 +92,7 @@ in
   # Make sure at least the self-signed certs are available before trying to start postfix
   systemd.services.dovecot2.after = lib.mkIf config.variables.useSSL [ "acme-selfsigned-certificates.target" ];
   # Setup dovecot
-  networking.firewall.allowedTCPPorts = [ 110 143 ];
+  networking.firewall.allowedTCPPorts = [ 110 143 993 995 ];
   services.dovecot2 = {
     enable = true;
     configFile = "${dovecotConf}";
