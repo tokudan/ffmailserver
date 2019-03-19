@@ -55,6 +55,7 @@ in
     enableSubmission = true;
     config = {
       mynetworks_style = "host";
+      recipient_delimiter = "+";
       relay_domains = "";
       smtpd_milters = "unix:${config.variables.rspamdMilterSocket}";
       non_smtpd_milters = "unix:${config.variables.rspamdMilterSocket}";
