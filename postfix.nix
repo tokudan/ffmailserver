@@ -72,8 +72,7 @@ in
       virtual_mailbox_maps = "proxy:sqlite:${pfvirtual_mailbox_maps}, proxy:sqlite:${pfvirtual_alias_domain_mailbox_maps}";
       virtual_transport = "lmtp:unix:${config.variables.dovecotLmtpSocket}";
     };
-    extraAliases = ''
-      root: ${config.variables.mailAdmin}
-      '';
+    rootAlias = config.variables.mailAdmin;
+    postmasterAlias = config.variables.mailAdmin;
   };
 }
