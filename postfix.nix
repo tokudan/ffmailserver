@@ -57,6 +57,7 @@ in
       mynetworks_style = "host";
       relay_domains = "";
       smtpd_milters = "unix:${config.variables.rspamdMilterSocket}";
+      non_smtpd_milters = "unix:${config.variables.rspamdMilterSocket}";
       smtpd_sasl_path = config.variables.dovecotAuthSocket;
       smtpd_sasl_type = "dovecot";
       smtpd_tls_auth_only = "yes";
