@@ -1,11 +1,23 @@
 { config, lib, pkgs, ... }:
 
+let
+  rspamdExtraConfig = pkgs.writeText "rspamd-extra.conf" ''
+    secure_ip = [::1]
+    actions {
+      reject = null;
+    }
+    milter_headers {
+      extended_spam_headers = true;
+    }
+    '';
+in
 {
   #networking.firewall.allowedTCPPorts = [ 110 143 993 995 ];
   services.rspamd = {
     enable = true;
+    # Just shove our own configuration up rspamd's rear end with high prio as the default configuration structure is a mess
     extraConfig = ''
-      reject = null;
+        .include(try=true,priority=10,duplicate=merge) "${rspamdExtraConfig}"
       '';
     workers = {
       controller = {
