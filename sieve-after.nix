@@ -8,8 +8,6 @@ stdenv.mkDerivation rec {
   phases = [ "copyPhase" "compilePhase" ];
 
   copyPhase = ''
-    set -x
-    pwd; ls -l
     cd $src
     mkdir $out
     cp -Rv $src/. $out/

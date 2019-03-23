@@ -25,7 +25,10 @@ in
         extraConfig = ''
           secure_ip = [::1]
         '';
-        bindSockets = [ "[::1]:11334" ];
+        bindSockets = [
+          "[::1]:11334"
+          { mode = "0666"; owner = config.variables.vmailUser; socket = "/run/rspamd/worker-controller.socket"; }
+        ];
       };
       rspamd_proxy = {
         enable = true;

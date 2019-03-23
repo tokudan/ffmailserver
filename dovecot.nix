@@ -55,6 +55,10 @@ let
       mail_plugins = sieve
     }
 
+    protocol imap {
+      mail_plugins = $mail_plugins imap_sieve
+    }
+
     namespace inbox {
       inbox = yes
       location =
@@ -81,6 +85,18 @@ let
 
     plugin {
       sieve_after = ${(pkgs.callPackage ./sieve-after.nix {}) }
+      sieve_plugins = sieve_imapsieve sieve_extprograms
+      # From elsewhere to Spam folder
+      imapsieve_mailbox1_name = Junk
+      imapsieve_mailbox1_causes = COPY
+      imapsieve_mailbox1_before = file:${(pkgs.callPackage ./sieve-report-spam-ham.nix {})}/report-spam.sieve
+      # From Spam folder to elsewhere
+      imapsieve_mailbox2_name = *
+      imapsieve_mailbox2_from = Junk
+      imapsieve_mailbox2_causes = COPY
+      imapsieve_mailbox2_before = file:${(pkgs.callPackage ./sieve-report-spam-ham.nix {})}/report-ham.sieve
+      sieve_pipe_bin_dir = ${(pkgs.callPackage ./sieve-pipe-bin-dir.nix {})}
+      sieve_global_extensions = +vnd.dovecot.pipe +vnd.dovecot.environment
     }
   '';
 in
