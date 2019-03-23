@@ -51,6 +51,10 @@ let
       }
     }
 
+    protocol lmtp {
+      mail_plugins = sieve
+    }
+
     namespace inbox {
       inbox = yes
       location =
@@ -74,6 +78,10 @@ let
       }
       prefix =
     }
+
+    plugin {
+      sieve_after = ${(pkgs.callPackage ./sieve-after.nix {}) }
+    }
   '';
 in
 {
@@ -96,6 +104,7 @@ in
   services.dovecot2 = {
     enable = true;
     configFile = "${dovecotConf}";
+    modules = [ pkgs.dovecot_pigeonhole ];
   };
   systemd.services."vmail-setup" = {
     serviceConfig.Type = "oneshot";
