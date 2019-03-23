@@ -10,7 +10,7 @@ let
   dovecotConf = pkgs.writeText "dovecot.conf" ''
     default_internal_user = dovecot2
     default_internal_group = dovecot2
-    protocols = imap lmtp pop3
+    protocols = imap lmtp pop3 sieve
 
     ${lib.optionalString (config.variables.useSSL) ''
         ssl = yes
@@ -116,7 +116,7 @@ in
   # Make sure at least the self-signed certs are available before trying to start postfix
   systemd.services.dovecot2.after = lib.mkIf config.variables.useSSL [ "acme-selfsigned-certificates.target" ];
   # Setup dovecot
-  networking.firewall.allowedTCPPorts = [ 110 143 993 995 ];
+  networking.firewall.allowedTCPPorts = [ 110 143 993 995 4190 ];
   services.dovecot2 = {
     enable = true;
     configFile = "${dovecotConf}";

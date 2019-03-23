@@ -17,6 +17,7 @@ let
       $config['des_key'] = 'JQgS7JcnFMNcU3cHKrr880wO';
       $config['plugins'] = array(
         'archive',
+        'managesieve',
         'zipdownload',
         );
       $config['skin'] = 'larry';
